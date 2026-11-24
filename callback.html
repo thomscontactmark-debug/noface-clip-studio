@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Connexion TikTok — NoFace Clip Studio</title>
+<style>
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;background:#0f0f14;color:#ececf1;line-height:1.6}
+  main{max-width:760px;margin:0 auto;padding:56px 20px}
+  code{display:block;word-break:break-all;background:#1c1c26;border:1px solid #2e2e3d;border-radius:8px;padding:12px;margin:12px 0}
+  button{background:#a78bfa;color:#0f0f14;border:0;border-radius:8px;padding:10px 16px;font-weight:600;cursor:pointer}
+  .err{color:#f87171}
+</style>
+</head>
+<body><main>
+<h1>Connexion TikTok</h1>
+<div id="out">Lecture de la réponse de TikTok…</div>
+<script>
+  const p = new URLSearchParams(location.search);
+  const out = document.getElementById('out');
+  if (p.get('error')) {
+    out.innerHTML = '<p class="err">Connexion refusée : ' +
+      (p.get('error_description') || p.get('error')).replace(/[<>&]/g, '') + '</p>';
+  } else if (p.get('code')) {
+    const code = p.get('code').replace(/[<>&"]/g, '');
+    out.innerHTML = '<p>Connexion acceptée. Copie ce code dans la fenêtre de l\'agent (il expire dans quelques minutes) :</p>' +
+      '<code id="c">' + code + '</code><button id="b">Copier</button>';
+    document.getElementById('b').onclick = () => {
+      const r = document.createRange(); r.selectNode(document.getElementById('c'));
+      getSelection().removeAllRanges(); getSelection().addRange(r);
+      try { document.execCommand('copy'); document.getElementById('b').textContent = 'Copié'; } catch (e) {}
+    };
+  } else {
+    out.textContent = 'Aucune réponse de connexion sur cette page.';
+  }
+</script>
+</main></body>
+</html>
